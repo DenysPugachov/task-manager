@@ -12,24 +12,27 @@ async function main() {
     console.log("Connected successfully to the server");
 
     const db = client.db(dbName)
-    const usersCollection = db.collection("users")
+    const collection = db.collection("tasks")
 
-    const insertedResults = await usersCollection.insertMany(
+    const result = await collection.insertMany(
         [
             {
-                name: "Alice",
-                age: 11,
+                description: "Learn Polish",
+                isCompleted: true, 
             },
             {
-                name: "Jen",
-                age: 35,
-            }
+                description: "Do home work",
+                isCompleted: true, 
+            },
+            {
+                description: "Find a new job.",
+                isCompleted: false, 
+            },
         ])
 
-    console.log('insertedResults :>> ', insertedResults);
-    
-    //finish
-    return "done"
+    console.log('insertedResults :>> ', result);
+
+    return "Done."
 }
 
 main()
