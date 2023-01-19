@@ -14,7 +14,8 @@ async function main() {
     console.log("Connected to DB.");
 
     const db = client.db(dbName)
-    const collection = db.collection("tasks")
+    const usersCollection = db.collection("users")
+    const tasksCollection = db.collection("tasks")
 
     // const result = await collection.insertMany(
     //     [
@@ -29,7 +30,29 @@ async function main() {
     //     ]
     // )
 
-    const result = await collection.find({ isCompleted: false }).toArray()
+    // const result = await collection.find({ isCompleted: false }).toArray()
+
+    // const result = await collection.updateOne(
+    //     {
+    //         _id: new ObjectId("63c83da889827e7f5e0280f4")
+    //     },
+    //     {
+    //         $inc: {
+    //             age: 5
+    //         }
+    //     }
+    // )
+
+    const result = await tasksCollection.updateMany(
+        {
+            isCompleted: true
+        },
+        {
+            $unset: {
+                isCompleated: true
+            }
+        }
+    )
 
     console.log('insertedResults :>> ', result);
 
