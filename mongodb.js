@@ -7,12 +7,6 @@ const client = new MongoClient(url)
 const dbName = "tasks-db"
 
 const id = new ObjectId()
-console.log('id :>> ', id.id);
-console.log('id.getTimestamp() :>> ', id.getTimestamp());
-console.log('id.toHexString() :>> ', id.toHexString().length);
-console.log('id.toString() :>> ', id.toString().length);
-console.log(id.id.length)
-console.log(id.toHexString().length)
 
 async function main() {
     // connect to the server
@@ -22,28 +16,18 @@ async function main() {
     const db = client.db(dbName)
     const collection = db.collection("tasks")
 
-    const result = await collection.insertMany(
-        [
-            {
-                description: "Learn Polish",
-                isCompleted: true,
-            },
-            {
-                description: "Do home work",
-                isCompleted: true,
-            },
-            {
-                description: "Find a new job.",
-                isCompleted: false,
-            },
-        ])
+    const result = await collection.findOne(
+        {
+            id: ObjectId("63c84fa5d8ddd8b793417a67")
+        }
+    )
 
     console.log('insertedResults :>> ', result);
 
     return "Done."
 }
 
-// main()
-//     .then(console.log)
-//     .catch(console.error)
-//     .finally(() => client.close())
+main()
+    .then(console.log)
+    .catch(console.error)
+    .finally(() => client.close())
