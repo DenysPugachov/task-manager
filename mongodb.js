@@ -54,9 +54,19 @@ async function main() {
     //     }
     // )
 
-    const result = await tasksCollection.deleteOne({
-        description: "Find a new job."
-    })
+    // const result = await tasksCollection.deleteOne({
+    //     description: "Find a new job."
+    // })
+
+    const result = await tasksCollection.updateMany({
+        _id: ObjectId("63c9a1c34fb1d0f3ec5e0752")
+    },
+        {
+            $set: {
+                isCompleted: false
+            }
+        }
+    )
 
     console.log('insertedResults :>> ', result);
 
