@@ -43,16 +43,20 @@ async function main() {
     //     }
     // )
 
-    const result = await tasksCollection.updateMany(
-        {
-            isCompleted: true
-        },
-        {
-            $unset: {
-                isCompleated: true
-            }
-        }
-    )
+    // const result = await tasksCollection.updateMany(
+    //     {
+    //         isCompleted: true
+    //     },
+    //     {
+    //         $unset: {
+    //             isCompleated: true
+    //         }
+    //     }
+    // )
+
+    const result = await tasksCollection.deleteMany({
+        description: "Read a good book"
+    })
 
     console.log('insertedResults :>> ', result);
 
