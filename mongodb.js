@@ -11,16 +11,25 @@ const id = new ObjectId()
 async function main() {
     // connect to the server
     await client.connect()
-    console.log("Connected successfully to the server");
+    console.log("Connected to DB.");
 
     const db = client.db(dbName)
     const collection = db.collection("tasks")
 
-    const result = await collection.findOne(
-        {
-            id: ObjectId("63c84fa5d8ddd8b793417a67")
-        }
-    )
+    // const result = await collection.insertMany(
+    //     [
+    //         {
+    //             description: "Read a good book",
+    //             isCompleted: false,
+    //         },
+    //         {
+    //             description: "Do some exercises",
+    //             isCompleted: false,
+    //         },
+    //     ]
+    // )
+
+    const result = await collection.find({ isCompleted: false }).toArray()
 
     console.log('insertedResults :>> ', result);
 
