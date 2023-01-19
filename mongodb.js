@@ -54,8 +54,8 @@ async function main() {
     //     }
     // )
 
-    const result = await tasksCollection.deleteMany({
-        description: "Read a good book"
+    const result = await tasksCollection.deleteOne({
+        description: "Find a new job."
     })
 
     console.log('insertedResults :>> ', result);
