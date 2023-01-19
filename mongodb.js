@@ -1,10 +1,18 @@
-const { MongoClient } = require("mongodb")
+const { MongoClient, ObjectId } = require("mongodb")
 
 //connection URL
 const url = "mongodb://127.0.0.1:27017"
 const client = new MongoClient(url)
 
 const dbName = "tasks-db"
+
+const id = new ObjectId()
+console.log('id :>> ', id.id);
+console.log('id.getTimestamp() :>> ', id.getTimestamp());
+console.log('id.toHexString() :>> ', id.toHexString().length);
+console.log('id.toString() :>> ', id.toString().length);
+console.log(id.id.length)
+console.log(id.toHexString().length)
 
 async function main() {
     // connect to the server
@@ -18,15 +26,15 @@ async function main() {
         [
             {
                 description: "Learn Polish",
-                isCompleted: true, 
+                isCompleted: true,
             },
             {
                 description: "Do home work",
-                isCompleted: true, 
+                isCompleted: true,
             },
             {
                 description: "Find a new job.",
-                isCompleted: false, 
+                isCompleted: false,
             },
         ])
 
@@ -35,7 +43,7 @@ async function main() {
     return "Done."
 }
 
-main()
-    .then(console.log)
-    .catch(console.error)
-    .finally(() => client.close())
+// main()
+//     .then(console.log)
+//     .catch(console.error)
+//     .finally(() => client.close())
