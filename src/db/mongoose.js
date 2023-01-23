@@ -21,7 +21,20 @@ const User = mongoose.model("User", {
                 throw new Error("Your have to provide a valid email.")
             }
         }
-
+    },
+    password: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength: 6,
+        validate(value) {
+            // if (value.length < 6) {
+            //     throw new Error("Password length must be greater than 6 char long.")
+            // }
+            if (value.toLowerCase().includes("password")) {
+                throw new Error("Use word 'password' for password is stupid!")
+            }
+        }
     },
     age: {
         type: Number,
@@ -35,36 +48,39 @@ const User = mongoose.model("User", {
 })
 
 
-// Mongoos use "Task"
-// const Task = mongoose.model("Task", {
-//     description: {
-//         type: String,
-//     },
-//     completed: {
-//         type: Boolean,
-//     }
-// })
-
-const den = new User({
-    name: "Jane     ",
-    email: "    PUGAenom@f.io",
+const Task = mongoose.model("Task", {
+    description: {
+        type: String,
+        trim: true,
+        required: true,
+    },
+    completed: {
+        type: Boolean,
+        default: false,
+    }
 })
 
-den.save().then(() => {
-    console.log('den :>> ', den);
-}).catch(error => {
-    console.log('error :>> ', error);
+// const den = new User({
+//     name: "Jane     ",
+//     email: "Jane@f.io",
+//     password: "123456",
+//     age: 34
+// })
+
+// den.save().then(() => {
+//     console.log('den :>> ', den);
+// }).catch(error => {
+//     console.log('error :>> ', error);
+// })
+
+
+const learnTask = new Task({
+    description: "    Create Finka app",
 })
 
-
-// const learnTask = new Task({
-//     description: "Add something...",
-//     completed: false,
-// })
-
-// learnTask.save().then(() => {
-//     console.log('learn :>> ', learnTask);
-// }).catch(err => {
-//     console.log('err :>> ', err);
-// })
+learnTask.save().then(() => {
+    console.log('learn :>> ', learnTask);
+}).catch(err => {
+    console.log('err :>> ', err);
+})
 
