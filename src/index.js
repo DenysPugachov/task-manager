@@ -22,17 +22,6 @@ app.post("/users", async (req, res) => {
    }
 });
 
-app.post("/tasks", async (req, res) => {
-   const task = new Task(req.body);
-
-   try {
-      await task.save();
-      res.status(201).send(task);
-   } catch (err) {
-      res.status(400).send(err);
-   }
-});
-
 app.get("/users/:id", async (req, res) => {
    const _id = req.params.id;
 
@@ -85,6 +74,31 @@ app.patch("/users/:id", async (req, res) => {
    }
 });
 
+app.delete("/users/:id", async (req, res) => {
+   const _id = req.params.id;
+   try {
+      const deletedUser = await User.findByIdAndDelete(_id);
+      if (!deletedUser) {
+         return res.status(404).send(`User with id ${_id} not found.`);
+      }
+      res.status(200).send(deletedUser);
+   } catch (err) {
+      res.status(500).send(err);
+   }
+});
+
+//========Task route=======
+app.post("/tasks", async (req, res) => {
+   const task = new Task(req.body);
+
+   try {
+      await task.save();
+      res.status(201).send(task);
+   } catch (err) {
+      res.status(400).send(err);
+   }
+});
+
 app.get("/tasks", async (req, res) => {
    try {
       const tasks = await Task.find({});
@@ -130,6 +144,19 @@ app.patch("/tasks/:id", async (req, res) => {
       res.status(202).send(updatedTask);
    } catch (err) {
       res.status(400).send(err);
+   }
+});
+
+app.delete("/tasks/:id", async (req, res) => {
+   const _id = req.params.id;
+   try {
+      const deletedTask = await Task.findByIdAndDelete(_id);
+      if (!deletedTask) {
+         return res.status(404).send(`Task with id ${_id} not found.`);
+      }
+      res.send(deletedTask);
+   } catch (err) {
+      res.status(500).send(err);
    }
 });
 
