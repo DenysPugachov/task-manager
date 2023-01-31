@@ -56,6 +56,35 @@ app.get("/users", async (req, res) => {
    }
 });
 
+app.patch("/users/:id", async (req, res) => {
+   //checking is user alow to update this field
+   const updates = Object.keys(req.body);
+   const allowedUpdates = ["name", "email", "age"];
+   const isUpdatesValid = updates.every(field =>
+      allowedUpdates.includes(field)
+   );
+
+   if (!isUpdatesValid) {
+      return res.status(400).send(`Change is not valid.`);
+   }
+
+   const _id = req.params.id;
+
+   try {
+      const updatedUser = await User.findByIdAndUpdate(_id, req.body, {
+         new: true, // return updatedUser info
+         runValidators: true,
+      });
+
+      if (!updatedUser) {
+         return res.status(404).send();
+      }
+      res.send(updatedUser);
+   } catch (err) {
+      res.status(400).send(err);
+   }
+});
+
 app.get("/tasks", async (req, res) => {
    try {
       const tasks = await Task.find({});
@@ -76,6 +105,31 @@ app.get("/tasks/:id", async (req, res) => {
       res.status(200).send(task);
    } catch (err) {
       res.status(500).send(err);
+   }
+});
+
+app.patch("/tasks/:id", async (req, res) => {
+   // allowed fields validation
+   const updateData = Object.keys(req.body);
+   const allowedField = ["description", "completed"];
+   const isUpdatesValid = updateData.every(field =>
+      allowedField.includes(field)
+   );
+
+   if (!isUpdatesValid) {
+      return res.status(403).send(`Error: You can NOT update ${updateData}.`);
+   }
+
+   const _id = req.params.id;
+
+   try {
+      const updatedTask = await Task.findByIdAndUpdate(_id, req.body, {
+         new: true, //return updated document
+         runValidators: true,
+      });
+      res.status(202).send(updatedTask);
+   } catch (err) {
+      res.status(400).send(err);
    }
 });
 
