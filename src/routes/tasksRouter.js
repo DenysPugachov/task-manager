@@ -36,29 +36,27 @@ tasksRouter.get("/tasks/:id", async (req, res) => {
 
 tasksRouter.patch("/tasks/:id", async (req, res) => {
    // allowed fields validation
-   const updateData = Object.keys(req.body);
+   const update = Object.keys(req.body);
    const allowedField = ["description", "completed"];
-   const isUpdatesValid = updateData.every(field =>
-      allowedField.includes(field)
-   );
+   const isUpdatesValid = update.every(field => allowedField.includes(field));
 
    if (!isUpdatesValid) {
-      return res.status(403).send(`Error: You can NOT update ${updateData}.`);
+      return res.status(403).send(`Error: You can NOT update ${update}.`);
    }
 
    const _id = req.params.id;
 
    try {
-      const updatedTask = await Task.findByIdAndUpdate(_id, req.body, {
-         new: true, //return updated document
-         runValidators: true,
-      });
+      const task = await Task.findById(_id);
 
-      if (!updatedTask) {
+      if (!task) {
          return res.status(404).send(`Task with id ${_id} not found.`);
       }
 
-      res.status(202).send(updatedTask);
+      update.forEach(field => (task[field] = req.body[field]));
+      await task.save();
+
+      res.status(202).send(task);
    } catch (err) {
       res.status(400).send(err);
    }

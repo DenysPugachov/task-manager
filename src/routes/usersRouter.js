@@ -39,7 +39,7 @@ usersRouter.get("/users", async (req, res) => {
 usersRouter.patch("/users/:id", async (req, res) => {
    //checking is user alow to update this field
    const updates = Object.keys(req.body);
-   const allowedUpdates = ["name", "email", "age"];
+   const allowedUpdates = ["name", "email", "age", "password"];
    const isUpdatesValid = updates.every(field =>
       allowedUpdates.includes(field)
    );
@@ -51,15 +51,16 @@ usersRouter.patch("/users/:id", async (req, res) => {
    const _id = req.params.id;
 
    try {
-      const updatedUser = await User.findByIdAndUpdate(_id, req.body, {
-         new: true, // return updatedUser info
-         runValidators: true,
-      });
+      // use insted of  Model.findByIdAndUpdate() to run Middleware
+      const user = await User.findById(_id);
+      updates.forEach(field => (user[field] = req.body[field]));
+      // here runs middleware
+      await user.save();
 
-      if (!updatedUser) {
+      if (!user) {
          return res.status(404).send();
       }
-      res.send(updatedUser);
+      res.send(user);
    } catch (err) {
       res.status(400).send(err);
    }
