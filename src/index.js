@@ -19,17 +19,17 @@ app.listen(port, () => {
    console.log(`Server is runing in port ${port}...`);
 });
 
-//========test =========
-// const bcrypt = require("bcrypt");
+// const jwt = require("jsonwebtoken");
 
-// const testBcrypt = async () => {
-//    const password = "pass1234";
-//    const hashedPassword = await bcrypt.hash(password, 8);
+// (function () {
+//    //test
+//    const token = jwt.sign({ _id: "idNumber123" }, "randomChars", {
+//       expiresIn: "7 days",
+//    }); // (data, signature(secret))=>{}
+//    //Base64 :>>    Header(algorithm, type of token)   . Payload (Body=> encoded :>> _id + iat:timestamp) . signature to verify the token
+//    //token  :>>  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJpZE51bWJlcjEyMyIsImlhdCI6MTY3NTUwNDM5M30.oewEh3v2K5NvudxD1dYpUDDHUUXwU2vsJRtwh-fzy-I
+//    console.log("token :>> ", token);
 
-//    console.log("password, hashedPassword :>> ", password, hashedPassword);
-
-//    const isMatch = await bcrypt.compare("pass1234", hashedPassword);
-//    console.log("isMatch :>> ", isMatch);
-// };
-
-// testBcrypt();
+//    const data = jwt.verify(token, "randomChars");
+//    console.log("data :>> ", data);
+// })();

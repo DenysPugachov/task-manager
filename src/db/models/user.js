@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
    email: {
       type: String,
       required: true,
+      unique: true, // only unique value can pass validation
       trim: true,
       lowercase: true,
       validate(value) {
@@ -42,9 +43,25 @@ const userSchema = new mongoose.Schema({
    },
 });
 
+userSchema.statics.findByCredentials = async (email, password) => {
+   const user = await User.findOne({ email });
+
+   if (!user) {
+      throw new Error("Unable to logging.");
+   }
+
+   const isMatch = await bcrypt.compare(password, user.password);
+
+   if (!isMatch) {
+      throw new Error("Unable to logging.");
+   }
+
+   return user;
+};
+
+//hash the plaint text user password before saving
 userSchema.pre("save", async function (next) {
    const user = this;
-
    if (user.isModified("password")) {
       user.password = await bcrypt.hash(user.password, 8);
    }
@@ -52,5 +69,7 @@ userSchema.pre("save", async function (next) {
 });
 
 const User = mongoose.model("User", userSchema);
+//after defining "uniqui: true" run Once for db to building unique indexes
+// User.init();
 
 module.exports = User;
