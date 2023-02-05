@@ -8,6 +8,22 @@ require("./db/mongoose");
 const app = express();
 const port = process.env.PORT || 3000;
 
+// express middleware
+// app.use((req, res, next) => {
+//    if (req.method === "GET") {
+//       res.send("GET request are disabled.");
+//    } else {
+//       next();
+//    }
+// });
+
+//for maitenese mode
+// app.use((req, res, next) => {
+//    res.status(503).send(
+//       "Site is currently in a maintense mode. Please check back soon..."
+//    );
+// });
+
 //automatically parse incoming body form json to an object
 app.use(express.json());
 
@@ -18,18 +34,3 @@ app.use(tasksRouter);
 app.listen(port, () => {
    console.log(`Server is runing in port ${port}...`);
 });
-
-// const jwt = require("jsonwebtoken");
-
-// (function () {
-//    //test
-//    const token = jwt.sign({ _id: "idNumber123" }, "randomChars", {
-//       expiresIn: "7 days",
-//    }); // (data, signature(secret))=>{}
-//    //Base64 :>>    Header(algorithm, type of token)   . Payload (Body=> encoded :>> _id + iat:timestamp) . signature to verify the token
-//    //token  :>>  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJpZE51bWJlcjEyMyIsImlhdCI6MTY3NTUwNDM5M30.oewEh3v2K5NvudxD1dYpUDDHUUXwU2vsJRtwh-fzy-I
-//    console.log("token :>> ", token);
-
-//    const data = jwt.verify(token, "randomChars");
-//    console.log("data :>> ", data);
-// })();
