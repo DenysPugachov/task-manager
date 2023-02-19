@@ -1,12 +1,12 @@
-const Task = require("../src/db/models/task");
+const Task = require("../src/models/task");
 
 require("../src/db/mongoose");
 
 Task.findByIdAndDelete("63d01f11d0bf413d5a700716").then(deletedTask => {
-   console.log("deletedTask :>> ", deletedTask)
-   
+   console.log("deletedTask :>> ", deletedTask);
+
    return Task.countDocuments({ completed: false })
-      
+
       .then(countResult => {
          console.log("countResult of uncompleted tasks :>> ", countResult);
       })

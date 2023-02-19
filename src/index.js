@@ -17,7 +17,7 @@ const port = process.env.PORT || 3000;
 //    }
 // });
 
-//for maitenese mode
+// for maitenese mode
 // app.use((req, res, next) => {
 //    res.status(503).send(
 //       "Site is currently in a maintense mode. Please check back soon..."
