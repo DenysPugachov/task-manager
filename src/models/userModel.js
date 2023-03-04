@@ -52,6 +52,14 @@ const userSchema = new mongoose.Schema({
    ],
 });
 
+// Set virtual property for populating tasks to the user
+// "tasks" - name of virtual field in User model
+userSchema.virtual("tasks", {
+   ref: "Task", //where to reference (link)
+   localField: "_id", //field was using in Task.owner (._id in User model).
+   foreignField: "owner", //name of the field in ref:"Task" (user.id)
+});
+
 // Clear data before sending back to the client
 // .toJSON called before JSON.stringify()
 userSchema.methods.toJSON = function () {
