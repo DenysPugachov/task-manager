@@ -18,21 +18,24 @@ tasksRouter.post("/tasks", auth, async (req, res) => {
    }
 });
 
-tasksRouter.get("/tasks", async (req, res) => {
+tasksRouter.get("/tasks", auth, async (req, res) => {
    try {
-      const tasks = await Task.find({});
-      res.status(200).send(tasks);
+      // const tasks = await Task.find({ owner: req.user._id });
+
+      await req.user.populate("tasks");
+      res.status(200).send(req.user.tasks);
    } catch (err) {
       res.status(401).send(err);
    }
 });
 
-tasksRouter.get("/tasks/:id", async (req, res) => {
+tasksRouter.get("/tasks/:id", auth, async (req, res) => {
    const _id = req.params.id;
+
    try {
-      const task = await Task.findById(_id);
+      const task = await Task.findOne({ _id, owner: req.user._id });
       if (!task) {
-         return res.status(404).send(`Task with id: ${_id} not found.`);
+         return res.status(404).send();
       }
       res.status(200).send(task);
    } catch (err) {
@@ -40,7 +43,7 @@ tasksRouter.get("/tasks/:id", async (req, res) => {
    }
 });
 
-tasksRouter.patch("/tasks/:id", async (req, res) => {
+tasksRouter.patch("/tasks/:id", auth, async (req, res) => {
    // allowed fields validation
    const update = Object.keys(req.body);
    const allowedField = ["description", "completed"];
@@ -50,13 +53,11 @@ tasksRouter.patch("/tasks/:id", async (req, res) => {
       return res.status(403).send(`Error: You can NOT update ${update}.`);
    }
 
-   const _id = req.params.id;
-
    try {
-      const task = await Task.findById(_id);
+      const task = await Task.findOne({ _id: req.params.id, owner: req.user._id });
 
       if (!task) {
-         return res.status(404).send(`Task with id ${_id} not found.`);
+         return res.status(404).send("No task");
       }
 
       update.forEach(field => (task[field] = req.body[field]));
@@ -68,12 +69,14 @@ tasksRouter.patch("/tasks/:id", async (req, res) => {
    }
 });
 
-tasksRouter.delete("/tasks/:id", async (req, res) => {
+tasksRouter.delete("/tasks/:id", auth,async (req, res) => {
    const _id = req.params.id;
    try {
-      const deletedTask = await Task.findByIdAndDelete(_id);
+      // const deletedTask = await Task.findByIdAndDelete(_id);
+      const deletedTask = await Task.findOneAndDelete({ _id, owner: req.user._id })
+      
       if (!deletedTask) {
-         return res.status(404).send(`Task with id ${_id} not found.`);
+         return res.status(404).send(`Task not found.`);
       }
       res.send(deletedTask);
    } catch (err) {
