@@ -14,6 +14,9 @@ const auth = async (req, res, next) => {
          throw new Error();
       }
 
+      //this token will be used for logout
+      req.token = token;
+
       req.user = user;
       next();
    } catch (e) {
