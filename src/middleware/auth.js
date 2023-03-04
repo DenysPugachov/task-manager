@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
+const User = require("../models/userModel");
 
 const auth = async (req, res, next) => {
    try {
@@ -16,8 +16,8 @@ const auth = async (req, res, next) => {
 
       //this token will be used for logout
       req.token = token;
-
       req.user = user;
+      
       next();
    } catch (e) {
       //if not authenticated

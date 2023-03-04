@@ -1,5 +1,5 @@
-const Task = require("../src/models/task");
-const User = require("../src/models/user");
+const Task = require("../src/models/taskModel");
+const User = require("../src/models/userModel");
 
 //connect to local DB
 require("../src/db/mongoose");

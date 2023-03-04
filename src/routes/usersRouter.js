@@ -1,6 +1,6 @@
 const express = require("express");
 const usersRouter = new express.Router();
-const User = require("../models/user");
+const User = require("../models/userModel");
 const auth = require("../middleware/auth");
 
 usersRouter.post("/users", async (req, res) => {
@@ -73,10 +73,11 @@ usersRouter.get("/users/:id", async (req, res) => {
    }
 });
 
-usersRouter.patch("/users/:id", async (req, res) => {
+usersRouter.patch("/users/me", auth, async (req, res) => {
    //checking is user alow to update this field
    const updates = Object.keys(req.body);
    const allowedUpdates = ["name", "email", "age", "password"];
+   
    const isUpdatesValid = updates.every(field =>
       allowedUpdates.includes(field)
    );
@@ -85,32 +86,22 @@ usersRouter.patch("/users/:id", async (req, res) => {
       return res.status(400).send(`Change is not valid.`);
    }
 
-   const _id = req.params.id;
-
    try {
-      // use insted of  Model.findByIdAndUpdate() to run Middleware
-      const user = await User.findById(_id);
-      updates.forEach(field => (user[field] = req.body[field]));
-      // here runs middleware
-      await user.save();
+      updates.forEach(field => (req.user[field] = req.body[field]));
+ 
+      await req.user.save();
 
-      if (!user) {
-         return res.status(404).send();
-      }
-      res.send(user);
+      res.send(req.user);
    } catch (err) {
       res.status(400).send(err);
    }
 });
 
-usersRouter.delete("/users/:id", async (req, res) => {
-   const _id = req.params.id;
+usersRouter.delete("/users/me", auth, async (req, res) => {
    try {
-      const deletedUser = await User.findByIdAndDelete(_id);
-      if (!deletedUser) {
-         return res.status(404).send(`User with id ${_id} not found.`);
-      }
-      res.status(200).send(deletedUser);
+      await req.user.remove();
+
+      res.status(200).send(req.user);
    } catch (err) {
       res.status(500).send(err);
    }
