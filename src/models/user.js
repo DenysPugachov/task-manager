@@ -52,6 +52,19 @@ const userSchema = new mongoose.Schema({
    ],
 });
 
+// Clear data before sending back to the client
+// .toJSON called before JSON.stringify()
+userSchema.methods.toJSON = function () {
+   const user = this;
+   const userObject = user.toObject(); // mongoose meethod: => return raw data
+
+   //delete unnecessary data
+   delete userObject.password;
+   delete userObject.tokens;
+
+   return userObject;
+};
+
 userSchema.methods.generateAuthToken = async function () {
    const user = this;
    const token = jwt.sign({ _id: user._id.toString() }, "randomChars");

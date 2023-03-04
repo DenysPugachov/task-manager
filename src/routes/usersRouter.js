@@ -14,7 +14,7 @@ usersRouter.post("/users", async (req, res) => {
    }
 });
 
-// Logging user route
+// Logging user
 usersRouter.post("/users/login", async (req, res) => {
    const { email, password } = req.body;
 
