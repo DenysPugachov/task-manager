@@ -19,6 +19,7 @@ tasksRouter.post("/tasks", auth, async (req, res) => {
 });
 
 // GET /tasks?completed=true
+// GET /tasks?limit=10&skip=0
 tasksRouter.get("/tasks", auth, async (req, res) => {
    const match = {};
 
@@ -28,8 +29,12 @@ tasksRouter.get("/tasks", auth, async (req, res) => {
 
    try {
       await req.user.populate({
-         path: "tasks",
+         path: "tasks", 
          match,
+         options: {
+            limit: parseInt(req.query.limit),
+            skip: parseInt(req.query.skip),
+         },
       });
       res.status(200).send(req.user.tasks);
    } catch (err) {
