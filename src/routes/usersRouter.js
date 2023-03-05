@@ -1,7 +1,12 @@
 const express = require("express");
+const multer = require("multer");
 const usersRouter = new express.Router();
 const User = require("../models/userModel");
 const auth = require("../middleware/auth");
+
+const upload = multer({
+   dest: "avatars",
+});
 
 usersRouter.post("/users", async (req, res) => {
    const user = new User(req.body);
@@ -12,6 +17,11 @@ usersRouter.post("/users", async (req, res) => {
    } catch (err) {
       res.status(400).send(err);
    }
+});
+
+//upload user avatar 
+usersRouter.post("/users/me/avatar", upload.single("avatar"), (req, res) => {
+   res.send();
 });
 
 // Logging user
@@ -77,7 +87,7 @@ usersRouter.patch("/users/me", auth, async (req, res) => {
    //checking is user alow to update this field
    const updates = Object.keys(req.body);
    const allowedUpdates = ["name", "email", "age", "password"];
-   
+
    const isUpdatesValid = updates.every(field =>
       allowedUpdates.includes(field)
    );
@@ -88,7 +98,7 @@ usersRouter.patch("/users/me", auth, async (req, res) => {
 
    try {
       updates.forEach(field => (req.user[field] = req.body[field]));
- 
+
       await req.user.save();
 
       res.send(req.user);

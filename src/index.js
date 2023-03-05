@@ -8,6 +8,17 @@ require("./db/mongoose");
 const app = express();
 const port = process.env.PORT || 3000;
 
+const multer = require("multer");
+const upload = multer({
+   dest: "images", // where all file will be stored
+});
+
+// upload.single("value match with 'key' in form-data") 
+//=> Returns middleware that processes a single file associated with the given form field.
+app.post("/upload", upload.single("upload"), (req, res) => {
+   res.send();
+});
+
 // express middleware
 // app.use((req, res, next) => {
 //    if (req.method === "GET") {
