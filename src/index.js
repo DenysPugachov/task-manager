@@ -22,18 +22,22 @@ const uploadConfig = multer({
       }
 
       cb(undefined, true);
-
-      // cb(new Error("Something went wrong")); // in case of error
-      // cb(undefined, true); // things go well
-      // cb(undefined, false); // silently reject the upload
    },
 });
 
 // upload.single("value match with 'key' in form-data")
 //=> Returns middleware that processes a single file associated with the given form field.
-app.post("/upload", uploadConfig.single("upload"), (req, res) => {
-   res.send();
-});
+app.post(
+   "/upload",
+   uploadConfig.single("upload"),
+   (req, res) => {
+      res.send();
+   },
+   //in case of an error
+   (error, req, res, next) => {
+      res.status(400).send({ error: error.message });
+   }
+);
 
 // express middleware
 // app.use((req, res, next) => {
