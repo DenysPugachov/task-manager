@@ -15,9 +15,8 @@ usersRouter.post("/users", async (req, res) => {
    }
 });
 
-//
+// configuring files to accept for avatars
 const uploadConfig = multer({
-   dest: "avatars",
    limits: {
       fileSize: 1000000,
    },
@@ -29,15 +28,20 @@ const uploadConfig = multer({
    },
 });
 
-//upload user avatar route
+// upload user avatar route
 usersRouter.post(
    "/users/me/avatar",
+   auth,
    uploadConfig.single("avatar"),
-   (req, res) => {
+   async (req, res) => {
+      // write data form buffer to db
+      req.user.avatar = req.file.buffer;
+      await req.user.save();
+
       res.send();
    }, // in case of an error
    (error, req, res, next) => {
-      res.status(400).send({error: error.message})
+      res.status(400).send({ error: error.message });
    }
 );
 
@@ -105,9 +109,7 @@ usersRouter.patch("/users/me", auth, async (req, res) => {
    const updates = Object.keys(req.body);
    const allowedUpdates = ["name", "email", "age", "password"];
 
-   const isUpdatesValid = updates.every(field =>
-      allowedUpdates.includes(field)
-   );
+   const isUpdatesValid = updates.every(field => allowedUpdates.includes(field));
 
    if (!isUpdatesValid) {
       return res.status(400).send(`Change is not valid.`);
@@ -129,6 +131,17 @@ usersRouter.delete("/users/me", auth, async (req, res) => {
       await req.user.remove();
 
       res.status(200).send(req.user);
+   } catch (err) {
+      res.status(500).send(err);
+   }
+});
+
+usersRouter.delete("/users/me/avatar", auth, async (req, res) => {
+   try {
+      req.user.avatar = undefined;
+      await req.user.save();
+
+      res.status(200).send("Your avatar was successfully deleted.");
    } catch (err) {
       res.status(500).send(err);
    }
