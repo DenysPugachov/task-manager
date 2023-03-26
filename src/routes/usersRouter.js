@@ -1,5 +1,6 @@
 const express = require("express");
 const multer = require("multer");
+const sharp = require("sharp");
 const usersRouter = new express.Router();
 const User = require("../models/userModel");
 const auth = require("../middleware/auth");
@@ -29,17 +30,14 @@ const uploadConfig = multer({
 });
 
 // upload user avatar route
-usersRouter.post(
-   "/users/me/avatar",
-   auth,
-   uploadConfig.single("avatar"),
-   async (req, res) => {
-      // write data form buffer to db
-      req.user.avatar = req.file.buffer;
-      await req.user.save();
+usersRouter.post("/users/me/avatar", auth, uploadConfig.single("avatar"), async (req, res) => {
+   // format image to DB stadarts with sharp 
+   const bufferImage = await sharp(req.file.buffer).resize(250, 250).png().toBuffer()
 
-      res.send();
-   }, // in case of an error
+   req.user.avatar = bufferImage
+   await req.user.save();
+   res.send();
+}, // in case of an error
    (error, req, res, next) => {
       res.status(400).send({ error: error.message });
    }
@@ -86,9 +84,11 @@ usersRouter.post("/users/logoutall", auth, async (req, res) => {
    }
 });
 
+
 usersRouter.get("/users/me", auth, async (req, res) => {
    res.send(req.user);
 });
+
 
 usersRouter.get("/users/:id", async (req, res) => {
    const _id = req.params.id;
@@ -103,6 +103,23 @@ usersRouter.get("/users/:id", async (req, res) => {
       res.status(500).send(err);
    }
 });
+
+
+usersRouter.get("/users/:id/avatar", async (req, res) => {
+   try {
+      const user = await User.findById(req.params.id);
+
+      if (!user || !user.avatar) {
+         throw new Error();
+      }
+
+      res.set("Content-Type", "image/png");
+      res.send(user.avatar);
+   } catch (e) {
+      res.status(404).send();
+   }
+})
+
 
 usersRouter.patch("/users/me", auth, async (req, res) => {
    //checking is user alow to update this field
@@ -124,7 +141,7 @@ usersRouter.patch("/users/me", auth, async (req, res) => {
    } catch (err) {
       res.status(400).send(err);
    }
-});
+})
 
 usersRouter.delete("/users/me", auth, async (req, res) => {
    try {
@@ -152,20 +169,6 @@ usersRouter.delete("/users/me/avatar", auth, async (req, res) => {
    }
 });
 
-usersRouter.get("/users/:id/avatar", async (req, res) => {
-   try {
-      const user = await User.findById(req.params.id)
-      
-      if (!user || !user.avatar) {
-         throw new Error()
-      }
 
-      res.set("Content-Type", "image/jpg")
-      res.send(user.avatar)
-         
-   } catch (e) {
-      res.status(404).send()
-    }
- })
 
 module.exports = usersRouter;
