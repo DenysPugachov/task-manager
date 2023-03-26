@@ -8,37 +8,6 @@ require("./db/mongoose");
 const app = express();
 const port = process.env.PORT || 3000;
 
-const multer = require("multer");
-
-const uploadConfig = multer({
-   dest: "images", // where all file will be stored
-   limits: {
-      fileSize: 1000000,
-   },
-   // "file" => info about file, "cb" => what to do when filtering is done.
-   fileFilter(req, file, cb) {
-      if (!file.originalname.match(/.(doc|docx)$/)) {
-         return cb(new Error("Please upload a MS word document."));
-      }
-
-      cb(undefined, true);
-   },
-});
-
-// upload.single("value match with 'key' in form-data")
-//=> Returns middleware that processes a single file associated with the given form field.
-app.post(
-   "/upload",
-   uploadConfig.single("upload"),
-   (req, res) => {
-      res.send();
-   },
-   //in case of an error
-   (error, req, res, next) => {
-      res.status(400).send({ error: error.message });
-   }
-);
-
 // express middleware
 // app.use((req, res, next) => {
 //    if (req.method === "GET") {
