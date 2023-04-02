@@ -6,7 +6,7 @@ const usersRouter = require("./routes/usersRouter");
 require("./db/mongoose");
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000
 
 // express middleware
 // app.use((req, res, next) => {
