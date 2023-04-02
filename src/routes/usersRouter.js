@@ -71,6 +71,7 @@ usersRouter.post("/users/logout", auth, async (req, res) => {
    }
 });
 
+
 //Logout All users
 usersRouter.post("/users/logoutall", auth, async (req, res) => {
    try {
@@ -92,7 +93,6 @@ usersRouter.get("/users/me", auth, async (req, res) => {
 
 usersRouter.get("/users/:id", async (req, res) => {
    const _id = req.params.id;
-
    try {
       const user = await User.findById(_id);
       if (!user) {
@@ -105,6 +105,21 @@ usersRouter.get("/users/:id", async (req, res) => {
 });
 
 
+//Get Current User Avatar
+usersRouter.get("/users/me/avatar", auth, async (req, res) => {
+   try {
+      if (!req.user.avatar) {
+         throw new Error("Avatar of current user do not exist.");
+      }
+      res.set("Content-Type", "image/png");
+      res.send(req.user.avatar)
+   } catch (e) {
+      res.status(404).send(e);
+   }
+})
+
+
+//Get user avatar by userID
 usersRouter.get("/users/:id/avatar", async (req, res) => {
    try {
       const user = await User.findById(req.params.id);
@@ -143,6 +158,7 @@ usersRouter.patch("/users/me", auth, async (req, res) => {
    }
 })
 
+
 usersRouter.delete("/users/me", auth, async (req, res) => {
    try {
       await req.user.remove();
@@ -152,6 +168,7 @@ usersRouter.delete("/users/me", auth, async (req, res) => {
       res.status(500).send(err);
    }
 });
+
 
 usersRouter.delete("/users/me/avatar", auth, async (req, res) => {
    try {
@@ -168,6 +185,7 @@ usersRouter.delete("/users/me/avatar", auth, async (req, res) => {
       res.status(500).send(err);
    }
 });
+
 
 
 
