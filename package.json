@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "env-cmd -f ./config/dev.env nodemon src/index.js",
+    "prod": "env-cmd -f ./config/prod.env nodemon src/index.js",
     "dbstart": "brew services start mongodb-community@6.0",
     "dbstop": "brew services stop mongodb-community@6.0",
     "test": "jest --watch"
