@@ -114,7 +114,7 @@ usersRouter.get("/users/me/avatar", auth, async (req, res) => {
       res.set("Content-Type", "image/png");
       res.send(req.user.avatar)
    } catch (e) {
-      res.status(404).send(e);
+      res.status(404).send(e.toString());
    }
 })
 
