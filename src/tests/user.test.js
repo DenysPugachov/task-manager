@@ -62,7 +62,7 @@ test("Should loging existing user", async () => {
     //fetch logged user form test DB
     const loggedUser = await User.findById(userOneId)
 
-    console.log('loggedUser :>> ', loggedUser);
+    // console.log('loggedUser :>> ', loggedUser);
 
     //Assert to match user second token 
     expect(response.body.token).toBe(loggedUser.tokens[1].token)
@@ -98,9 +98,22 @@ test("Should delete accout for current user", async () => {
         .expect(200)
 })
 
+test("Should removed user data to be deleted form DB", async () => {
+    await request(app)
+        .delete("/users/me")
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send()
+        .expect(200)
+
+    const deletedUser = await User.findById(userOneId)
+
+    expect(deletedUser).toBeNull()
+})
+
 test("Should NOT delete accout for unauthorized user", async () => {
     await request(app)
         .delete("/users/me")
         .send()
         .expect(401)
 })
+
