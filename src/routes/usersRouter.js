@@ -86,6 +86,7 @@ usersRouter.post("/users/logoutall", auth, async (req, res) => {
 });
 
 
+//Get current user profile
 usersRouter.get("/users/me", auth, async (req, res) => {
    res.send(req.user);
 });
@@ -158,7 +159,7 @@ usersRouter.patch("/users/me", auth, async (req, res) => {
    }
 })
 
-
+//Delete account for current user
 usersRouter.delete("/users/me", auth, async (req, res) => {
    try {
       await req.user.remove();

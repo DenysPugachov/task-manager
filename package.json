@@ -28,6 +28,8 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.1",
+    "@types/supertest": "^2.0.12",
     "env-cmd": "^10.1.0",
     "jest": "^29.5.0",
     "supertest": "^6.3.3"
