@@ -25,18 +25,47 @@ beforeEach(async () => {
 })
 
 test("Should signup new user", async () => {
-    await request(app).post("/users").send({
+    const response = await request(app).post("/users").send({
         name: "Den",
         email: "den@gmail.com",
         password: "Den123"
     }).expect(201)
+
+    //Assert that database was chaged correctly 
+    const user = await User.findById(response.body.user._id)
+    expect(user).not.toBeNull()
+
+    //Assertion about response
+    expect(response.body.user.name).toBe("Den")
+    expect(response.body).toMatchObject({
+        user: {
+            name: "Den",
+            email: "den@gmail.com"
+        },
+        token: user.tokens[0].token
+    })
+
+    //Assertion password not store in plain text in DB
+    expect(response.body.user.password).not.toBe("Den123")
+
 })
 
 test("Should loging existing user", async () => {
-    await request(app).post("/users/login").send({
-        email: userOne.email,
-        password: userOne.password,
-    }).expect(200)
+    const response = await request(app)
+        .post("/users/login")
+        .send({
+            email: userOne.email,
+            password: userOne.password,
+        })
+        .expect(200)
+
+    //fetch logged user form test DB
+    const loggedUser = await User.findById(userOneId)
+
+    console.log('loggedUser :>> ', loggedUser);
+
+    //Assert to match user second token 
+    expect(response.body.token).toBe(loggedUser.tokens[1].token)
 })
 
 test("Should not loging with bad user data", async () => {
