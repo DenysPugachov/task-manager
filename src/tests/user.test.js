@@ -7,7 +7,6 @@ const User = require("../models/userModel")
 
 //generate new id for userOne
 const userOneId = new mongoose.Types.ObjectId()
-
 const userOne = {
     _id: userOneId,
     name: "userOne",
@@ -18,8 +17,8 @@ const userOne = {
     }]
 }
 
+
 beforeEach(async () => {
-    // console.log(' before Each:>> ');
     await User.deleteMany({})
     await new User(userOne).save()
 })
@@ -67,10 +66,7 @@ test("Should loging existing user", async () => {
     console.log('response.body.token :>> ', response.body);
 
     //Assert to match user second token[1]
-    expect(response.body.token).toBe(loggedUser.tokens[0].token)
-
-    //FIXME: token[0] and token[1] a the same! (9/10) 
-    //TODO: how to change jwt generation base on timestamp? maybe timestamp generation for token is to short?
+    expect(response.body.token).toBe(loggedUser.tokens[1].token)
 })
 
 test("Should not loging with bad user data", async () => {
@@ -109,9 +105,7 @@ test("Should removed user data to be deleted form DB", async () => {
         .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
         .send()
         .expect(200)
-
     const deletedUser = await User.findById(userOneId)
-
     expect(deletedUser).toBeNull()
 })
 
