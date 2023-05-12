@@ -62,8 +62,8 @@ test("Should loging existing user", async () => {
     //fetch logged user form test DB
     const loggedUser = await User.findById(userOneId)
 
-    console.log('loggedUser :>> ', loggedUser.tokens);
-    console.log('response.body.token :>> ', response.body);
+    // console.log('loggedUser :>> ', loggedUser.tokens);
+    // console.log('response.body.token :>> ', response.body);
 
     //Assert to match user second token[1]
     expect(response.body.token).toBe(loggedUser.tokens[1].token)
