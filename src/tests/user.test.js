@@ -24,11 +24,14 @@ beforeEach(async () => {
 })
 
 test("Should signup new user", async () => {
-    const response = await request(app).post("/users").send({
-        name: "Den",
-        email: "den@gmail.com",
-        password: "Den123"
-    }).expect(201)
+    const response = await request(app)
+        .post("/users")
+        .send({
+            name: "Den",
+            email: "den@gmail.com",
+            password: "Den123"
+        })
+        .expect(201)
 
     //Assert that database was chaged correctly 
     const user = await User.findById(response.body.user._id)
@@ -124,10 +127,39 @@ test("Should upload user avatar image", async () => {
         .expect(200)
 
     const user = await User.findById(userOneId)
+
     // .toBe  => ===
     // .toEqual => compare props of an object
     // expect.any(data type)
     expect(user.avatar).toEqual(expect.any(Buffer))
-
 })
+
+test("Should update valid user fields", async () => {
+    await request(app)
+        .patch("/users/me")
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send({
+            name: "Den",
+            email: "den@gmail.com",
+        })
+        .expect(200)
+
+    const user = await User.findById(userOneId)
+
+    //check if user name is changed
+    expect(user.name).not.toBe(userOne.name)
+})
+
+
+test("Should not update invalid user fields", async () => {
+    await request(app)
+        .patch("/users/me")
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send({
+            location: "Germany"
+        })
+        .expect(400)
+})
+
+
 
