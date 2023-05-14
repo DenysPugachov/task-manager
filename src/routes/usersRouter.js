@@ -5,16 +5,6 @@ const usersRouter = new express.Router();
 const User = require("../models/userModel");
 const auth = require("../middleware/auth");
 
-usersRouter.post("/users", async (req, res) => {
-   const user = new User(req.body);
-   try {
-      const token = await user.generateAuthToken();
-      await user.save();
-      res.status(201).send({ user, token });
-   } catch (err) {
-      res.status(400).send(err);
-   }
-});
 
 // configuring files to accept for avatars
 const uploadConfig = multer({
@@ -29,6 +19,18 @@ const uploadConfig = multer({
    },
 });
 
+usersRouter.post("/users", async (req, res) => {
+   const user = new User(req.body);
+   try {
+      const token = await user.generateAuthToken();
+      await user.save();
+      res.status(201).send({ user, token });
+   } catch (err) {
+      res.status(400).send(err);
+   }
+});
+
+
 // upload user avatar route
 usersRouter.post("/users/me/avatar", auth, uploadConfig.single("avatar"), async (req, res) => {
    // format image to DB stadarts with sharp 
@@ -42,6 +44,7 @@ usersRouter.post("/users/me/avatar", auth, uploadConfig.single("avatar"), async 
       res.status(400).send({ error: error.message });
    }
 );
+
 
 // Logging user
 usersRouter.post("/users/login", async (req, res) => {
