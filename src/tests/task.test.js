@@ -57,3 +57,15 @@ test("Should not create compleated task", async () => {
         })
         .expect(400)
 })
+
+test("Should not create task with invalid description", async () => {
+    const invalidDescription = ""
+
+    await request(app)
+        .post("/tasks")
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send({
+            description: invalidDescription
+        })
+        .expect(400)
+})
