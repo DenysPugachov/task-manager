@@ -130,9 +130,16 @@ test("Should fetch user task by id", async () => {
     expect(task.description).toEqual(taskOne.description)
 })
 
+test("Should not fetch task without auth", async () => {
+    const taskId = taskOne._id
+    await request(app)
+        .get(`/tasks/${taskId}`)
+        .send()
+        .expect(401)
+})
+
 
 // TODO:
-// Should fetch user task by id
 // Should not fetch user task by id if unauthenticated
 // Should not fetch other users task by id
 // Should fetch only completed tasks
