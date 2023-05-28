@@ -46,3 +46,14 @@ test("Should not delete other users tasks", async () => {
     expect(currentTask.description).toEqual(taskOne.description)
 
 })
+
+test("Should not create compleated task", async () => {
+    await request(app)
+        .post("/tasks")
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send({
+            description: "Some already compleated task.",
+            completed: true,
+        })
+        .expect(400)
+})

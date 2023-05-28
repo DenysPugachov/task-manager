@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator")
 
 const taskSchema = new mongoose.Schema({
    description: {
@@ -9,6 +10,11 @@ const taskSchema = new mongoose.Schema({
    completed: {
       type: Boolean,
       default: false,
+      validate(value) {
+         if (value) {
+            throw new Error("You should add only uncompleted task.")
+         }
+      },
    },
    owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -19,6 +25,6 @@ const taskSchema = new mongoose.Schema({
    timestamps: true,
 });
 
-const Task = mongoose.model("Task", taskSchema );
+const Task = mongoose.model("Task", taskSchema);
 
 module.exports = Task;
