@@ -143,5 +143,19 @@ test("Should not update invalid user fields", async () => {
         .expect(400)
 })
 
+test("Should not signup user with invalid email", async () => {
+    const response = await request(app)
+        .post("/users")
+        .send({
+            name: "new Den",
+            email: "invalidemail_gmail.com",
+            password: "Den123"
+        })
+        .expect(400)
+
+    // console.log('response :>> ', response.res.statusCode);
+    expect(response.res.statusCode).not.toBe(201)
+})
+
 
 

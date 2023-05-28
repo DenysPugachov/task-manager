@@ -6,7 +6,7 @@ const User = require("../models/userModel");
 const auth = require("../middleware/auth");
 
 
-// configuring files to accept for avatars
+// Configuring files to accept for avatars
 const uploadConfig = multer({
    limits: {
       fileSize: 1000000,
@@ -19,6 +19,7 @@ const uploadConfig = multer({
    },
 });
 
+// Signup new user
 usersRouter.post("/users", async (req, res) => {
    const user = new User(req.body);
    try {
@@ -31,7 +32,7 @@ usersRouter.post("/users", async (req, res) => {
 });
 
 
-// upload user avatar route
+// Upload user avatar route
 usersRouter.post("/users/me/avatar", auth, uploadConfig.single("avatar"), async (req, res) => {
    // format image to DB stadarts with sharp 
    const bufferImage = await sharp(req.file.buffer).resize(250, 250).png().toBuffer()
