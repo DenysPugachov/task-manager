@@ -116,14 +116,22 @@ test("Should not update other user task", async () => {
         .expect(404)
 
     const task = await Task.findById(taskUserOneId)
-    console.log('task :>> ', task);
     expect(task.description).not.toEqual(updatedDescription)
+})
 
+test("Should fetch user task by id", async () => {
+    const taskId = taskOne._id
+    await request(app)
+        .get(`/tasks/${taskId}`)
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send()
+        .expect(200)
+    const task = await Task.findById(taskId)
+    expect(task.description).toEqual(taskOne.description)
 })
 
 
 // TODO:
-// Should not update other users task
 // Should fetch user task by id
 // Should not fetch user task by id if unauthenticated
 // Should not fetch other users task by id
