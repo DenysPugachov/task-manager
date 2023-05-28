@@ -69,3 +69,20 @@ test("Should not create task with invalid description", async () => {
         })
         .expect(400)
 })
+
+test("Should able to delete task", async () => {
+    const task = {
+        description: "This tasks should be deleted."
+    }
+    // Create task
+    await request(app)
+        .post("/tasks")
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send(task)
+        .expect(201)
+    // Delete task
+    await Task.deleteOne(task)
+    // Try to find deleted task
+    const deletedTask = await Task.findOne(task)
+    expect(deletedTask).toBeNull()
+})
