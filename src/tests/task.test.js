@@ -41,7 +41,6 @@ test("Should not delete other users tasks", async () => {
         .set("Authorization", `Bearer ${userTwo.tokens[0].token}`)
         .send()
         .expect(404)
-
     const currentTask = await Task.findById(taskOne._id)
     expect(currentTask.description).toEqual(taskOne.description)
 
@@ -60,7 +59,6 @@ test("Should not create compleated task", async () => {
 
 test("Should not create task with invalid description", async () => {
     const invalidDescription = ""
-
     await request(app)
         .post("/tasks")
         .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
@@ -86,3 +84,26 @@ test("Should able to delete task", async () => {
     const deletedTask = await Task.findOne(task)
     expect(deletedTask).toBeNull()
 })
+
+
+test("Should not delete task if unauthenticated", async () => {
+    const taskId = taskOne._id
+    await request(app)
+        .delete(`/tasks/${taskId}`)
+        .send()
+        .expect(401)
+
+    const task = await Task.findOne({ _id: taskId })
+    expect(task).not.toBeNull()
+})
+
+
+// TODO:
+// Should not delete task if unauthenticated
+// Should not update other users task
+// Should fetch user task by id
+// Should not fetch user task by id if unauthenticated
+// Should not fetch other users task by id
+// Should fetch only completed tasks
+// Should fetch only incomplete tasks
+// Should sort tasks by description / completed / createdAt / updatedAt// Should fetch page of tasksx
