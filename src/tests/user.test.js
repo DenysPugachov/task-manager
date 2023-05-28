@@ -144,11 +144,13 @@ test("Should not update invalid user fields", async () => {
 })
 
 test("Should not signup user with invalid email", async () => {
+    const invalidEmail = "invalid_gmail.com"
+    const validEmail = "invalid@gmail.com"// should fail the test
     const response = await request(app)
         .post("/users")
         .send({
             name: "new Den",
-            email: "invalidemail_gmail.com",
+            email: invalidEmail,
             password: "Den123"
         })
         .expect(400)
@@ -157,5 +159,34 @@ test("Should not signup user with invalid email", async () => {
     expect(response.res.statusCode).not.toBe(201)
 })
 
+
+test("Should not signup user with invalid name", async () => {
+    const invalidName = "" // A name should not be empty.
+    const validName = "Name" // Should fail the test.
+    const response = await request(app)
+        .post("/users")
+        .send({
+            name: invalidName,
+            email: "newemail@gmail.com",
+            password: "Den123"
+        })
+        .expect(400)
+    expect(response.res.statusCode).not.toBe(201)
+})
+
+
+test("Should not signup user with invalid password", async () => {
+    const invalidPassword = "12345" // A password should not be empty, min 6 char.
+    const validPassword = "123456" // Should fail the test.
+    const response = await request(app)
+        .post("/users")
+        .send({
+            name: "NewName",
+            email: "newemail@gmail.com",
+            password: invalidPassword
+        })
+        .expect(400)
+    expect(response.res.statusCode).not.toBe(201)
+})
 
 
