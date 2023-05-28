@@ -190,3 +190,13 @@ test("Should not signup user with invalid password", async () => {
 })
 
 
+test("Should not update without authentication", async () => {
+    const updatedValue = "updatedValue"
+    await request(app)
+        .patch("/users/me")
+        .send({
+            name: updatedValue
+        })
+        .expect(401)
+})
+
