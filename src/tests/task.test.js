@@ -5,6 +5,7 @@ const { userOne, userOneId, userTwo, taskOne, taskTwo, taskThree, userTwoId, set
 
 beforeEach(setupDB)
 
+
 test("Should create task for user", async () => {
     const response = await request(app)
         .post("/tasks")
@@ -21,6 +22,7 @@ test("Should create task for user", async () => {
     expect(task.completed).toEqual(false)
 })
 
+
 test("Should GET tasks for user", async () => {
     const response = await request(app)
         .get("/tasks")
@@ -35,6 +37,7 @@ test("Should GET tasks for user", async () => {
     expect(userTwoTasks.length).toEqual(1)
 })
 
+
 test("Should not delete other users tasks", async () => {
     const response = await request(app)
         .delete(`/tasks/${taskOne._id}`)
@@ -46,6 +49,7 @@ test("Should not delete other users tasks", async () => {
 
 })
 
+
 test("Should not create compleated task", async () => {
     await request(app)
         .post("/tasks")
@@ -56,6 +60,7 @@ test("Should not create compleated task", async () => {
         })
         .expect(400)
 })
+
 
 test("Should not create task with invalid description", async () => {
     const invalidDescription = ""
@@ -98,8 +103,26 @@ test("Should not delete task if unauthenticated", async () => {
 })
 
 
+test("Should not update other user task", async () => {
+    const taskUserOneId = taskOne._id
+    const updatedDescription = "Some updated description."
+
+    await request(app)
+        .patch(`/tasks/${taskUserOneId}`)
+        .set("Authorization", `Bearer ${userTwo.tokens[0].token}`)
+        .send({
+            description: updatedDescription
+        })
+        .expect(404)
+
+    const task = await Task.findById(taskUserOneId)
+    console.log('task :>> ', task);
+    expect(task.description).not.toEqual(updatedDescription)
+
+})
+
+
 // TODO:
-// Should not delete task if unauthenticated
 // Should not update other users task
 // Should fetch user task by id
 // Should not fetch user task by id if unauthenticated
