@@ -10,11 +10,6 @@ const taskSchema = new mongoose.Schema({
    completed: {
       type: Boolean,
       default: false,
-      validate(value) {
-         if (value) {
-            throw new Error("You should add only uncompleted task.")
-         }
-      },
    },
    owner: {
       type: mongoose.Schema.Types.ObjectId,

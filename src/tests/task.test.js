@@ -139,9 +139,28 @@ test("Should not fetch task without auth", async () => {
 })
 
 
+test("Should able to fetch only completed tasks", async () => {
+    // Update task to compleated
+    const updatedTaskId = taskOne._id
+    await request(app)
+        .patch(`/tasks/${updatedTaskId}`)
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send({
+            completed: true
+        })
+        .expect(202)
+
+    // Fetch only compleated:true
+    const complitedTasks = await request(app)
+        .get(`/tasks?completed=true`)
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send()
+        .expect(200)
+
+    expect(complitedTasks.body[0].completed).toBe(true)
+})
+
+
 // TODO:
-// Should not fetch user task by id if unauthenticated
-// Should not fetch other users task by id
-// Should fetch only completed tasks
 // Should fetch only incomplete tasks
 // Should sort tasks by description / completed / createdAt / updatedAt// Should fetch page of tasksx

@@ -4,13 +4,17 @@ const Task = require("../models/taskModel");
 const auth = require("../middleware/auth");
 
 tasksRouter.post("/tasks", auth, async (req, res) => {
-   // const task = new Task(req.body);
-   const task = new Task({
-      ...req.body,
-      owner: req.user._id,
-   });
-
    try {
+      if (req.body.completed) {
+         throw new Error("You should add only uncompleted task.")
+      }
+
+      const task = new Task({
+         ...req.body,
+         owner: req.user._id,
+      });
+
+
       await task.save();
       res.status(201).send(task);
    } catch (err) {
