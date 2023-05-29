@@ -151,16 +151,45 @@ test("Should able to fetch only completed tasks", async () => {
         .expect(202)
 
     // Fetch only compleated:true
-    const complitedTasks = await request(app)
+    const response = await request(app)
         .get(`/tasks?completed=true`)
         .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
         .send()
         .expect(200)
 
-    expect(complitedTasks.body[0].completed).toBe(true)
+    const isAllFetchedTasksCompleted = response.body.every(task =>
+        task.completed === true
+    )
+    expect(isAllFetchedTasksCompleted).toBe(true)
+})
+
+
+test("Should able to fetch only uncompleted tasks", async () => {
+    // Update one task to compleated
+    const updatedTaskId = taskOne._id
+    await request(app)
+        .patch(`/tasks/${updatedTaskId}`)
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send({
+            completed: true
+        })
+        .expect(202)
+
+    // Fetch only uncompleted tasks
+    const response = await request(app)
+        .get(`/tasks?completed=false`)
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send()
+        .expect(200)
+
+    const isAllFetchedTasksUncompleted = response.body.every(task =>
+        task.completed === false
+    )
+    expect(isAllFetchedTasksUncompleted).toBe(true)
 })
 
 
 // TODO:
 // Should fetch only incomplete tasks
-// Should sort tasks by description / completed / createdAt / updatedAt// Should fetch page of tasksx
+// Should sort tasks by description / completed / createdAt / updatedAt// Should fetch page of tasks
+// Should fetch page of tasks
