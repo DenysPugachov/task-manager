@@ -33,7 +33,7 @@ test("Should GET tasks for user", async () => {
     const userOneTasks = await Task.find({ owner: userOneId })
     const userTwoTasks = await Task.find({ owner: userTwoId })
     // console.log('task :>> ', task);
-    expect(userOneTasks.length).toEqual(2)
+    expect(userOneTasks.length).toEqual(3)
     expect(userTwoTasks.length).toEqual(1)
 })
 
@@ -189,10 +189,38 @@ test("Should able to fetch only uncompleted tasks", async () => {
 })
 
 test("Should sort tasks by description", async () => {
+    const response = await request(app)
+        .get("/tasks?sortBy=description:desc")
+        // .get("/tasks/")
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send()
+        .expect(200)
 
+    // sort copy of response array tasks by description in descending order
+    const sortedByDescription =
+        [...response.body].sort((a, b) => (a.description < b.description ? 1 : -1))
+
+    expect(sortedByDescription[0]).toBe(response.body[0])
+    expect(sortedByDescription[1]).toBe(response.body[1])
+})
+
+
+test("Should sort tasks by CreatedAt", async () => {
+    const response = await request(app)
+        .get("/tasks?sortBy=createdAt:desc")
+        // .get("/tasks/")
+        .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+        .send()
+        .expect(200)
+
+    // sort copy of response array tasks by description in descending order
+    const sortedByCreatedAt =
+        [...response.body].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+
+    expect(sortedByCreatedAt[0]).toBe(response.body[0])
+    expect(sortedByCreatedAt[1]).toBe(response.body[1])
 })
 
 
 // TODO:
-// Should sort tasks by description / completed / createdAt / updatedAt
 // Should fetch page of tasks
