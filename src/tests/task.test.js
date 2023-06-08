@@ -188,8 +188,11 @@ test("Should able to fetch only uncompleted tasks", async () => {
     expect(isAllFetchedTasksUncompleted).toBe(true)
 })
 
+test("Should sort tasks by description", async () => {
+
+})
+
 
 // TODO:
-// Should fetch only incomplete tasks
-// Should sort tasks by description / completed / createdAt / updatedAt// Should fetch page of tasks
+// Should sort tasks by description / completed / createdAt / updatedAt
 // Should fetch page of tasks
